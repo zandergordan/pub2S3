@@ -19,4 +19,5 @@ Imports:
     aws.s3,
     rmarkdown,
     xfun,
-    rstudioapi
+    rstudioapi,
+    aws.ec2metadata
