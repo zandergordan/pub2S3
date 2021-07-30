@@ -1,0 +1,4 @@
+Name: Publish to S3
+Description: Publishes active rmarkdown document to user-selected S3 bucket
+Binding: rmarkdown2S3_Addin
+Interactive: false
