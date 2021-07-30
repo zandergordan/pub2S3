@@ -51,9 +51,10 @@ rmarkdown2S3_Addin <- function() {
   )
 
   # With the desired bucket known, save the rendered report to S3
-  aws.s3::put_object(file = paste0(rmd_dir, rmd_base, ".html"),
+  aws.s3::put_object(file = file.path(rmd_dir, paste0(rmd_base, ".html")),
                      object = paste0(rmd_base, ".html"),
-                     bucket = user_bucket)
+                     bucket = user_bucket,
+                     show_progress = TRUE)
   # Check if a _files directory was made, and if so copy those files too
   extra_files_path <- file.path(rmd_dir, paste0(rmd_base, "_files"))
   if (dir.exists(extra_files_path)) {
@@ -63,7 +64,8 @@ rmarkdown2S3_Addin <- function() {
       extra_object_name <- file.path(paste0(rmd_base, "_files"), f)
       aws.s3::put_object(file = extra_file_name,
                          object = extra_object_name,
-                         bucket = user_bucket)
+                         bucket = user_bucket,
+                         show_progress = TRUE)
     }
   }
 }
