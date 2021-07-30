@@ -29,7 +29,12 @@ rmarkdown2S3_Addin <- function() {
 
 
   # check for AWS S3 credentials. This can be from .Renviron, stored on local
-  # keyring, or can be EC2 role
+  # keyring, or can be EC2 role. Currently I am just checking if any buckets
+  # are available.
+  available_buckets <- aws.s3::bucketlist()
+  if (nrow(available_buckets) == 0) {
+    stop("No S3 buckets are available, please check your AWS credentials.")
+  }
 
 
   # assuming there is S3 access, ask the user which bucket they want to store
@@ -37,11 +42,16 @@ rmarkdown2S3_Addin <- function() {
   m <- "Please choose which of your available S3 buckets you wish to copy the report to:"
   user_bucket <- rstudioapi::showPrompt(
     title = "Select S3 Bucket",
-    message = paste(c(m, aws.s3::bucketlist()$Bucket), collapse = "\n"),
+    message = paste(c(m, available_buckets$Bucket), collapse = "\n"),
     default = rstudioapi::readPreference("rmarkdownS3_bucket", default = NULL)
   )
-  # save preference using rstudioapi::writePreference
+  # check if there is a valid bucket choice, then save preference using
+  # rstudioapi::writePreference
   if (is.null(user_bucket)) stop("Please select an S3 bucket")
+  if (user_bucket %in% available_buckets$Bucket) {
+    stop("Please provide the name of a valid S3 bucket you have access to.\n",
+         "You can view a list of valid buckets with `aws.s3::bucketlist()`")
+  }
   rstudioapi::writePreference("rmarkdownS3_bucket", user_bucket)
 
   # render the report
