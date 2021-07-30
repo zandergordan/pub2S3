@@ -48,7 +48,7 @@ rmarkdown2S3_Addin <- function() {
   # check if there is a valid bucket choice, then save preference using
   # rstudioapi::writePreference
   if (is.null(user_bucket)) stop("Please select an S3 bucket")
-  if (user_bucket %in% available_buckets$Bucket) {
+  if (!(user_bucket %in% available_buckets$Bucket)) {
     stop("Please provide the name of a valid S3 bucket you have access to.\n",
          "You can view a list of valid buckets with `aws.s3::bucketlist()`")
   }
